@@ -1,0 +1,10 @@
+[nushell]
+%APPDATA%\nushell\env.nu
+[alacritty]
+%APPDATA%\alacritty\alacritty.toml
+[wezterm]
+%USERPROFILE%\.config\wezterm\wezterm.lua
+or
+%USERPROFILE%\.wezterm.lua
+[neovim]
+%LOCALAPPDATA%\nvim\init.lua
