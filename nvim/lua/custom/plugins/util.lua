@@ -66,4 +66,25 @@ return {
     },
   },
   { 'kkharji/sqlite.lua' },
+  {
+    'jackMort/ChatGPT.nvim',
+    event = 'VeryLazy',
+    config = function()
+      local api_key
+      if os.getenv 'OS' == 'Windows_NT' then
+        api_key = os.getenv 'USERPROFILE' .. '\\.chatgpt_api_key.txt'
+      else
+        api_key = os.getenv 'HOME' .. '/.chatgpt_api_key.txt'
+      end
+      require('chatgpt').setup {
+        api_key_cmd = 'cat ' .. api_key,
+      }
+    end,
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'nvim-lua/plenary.nvim',
+      'folke/trouble.nvim',
+      'nvim-telescope/telescope.nvim',
+    },
+  },
 }
