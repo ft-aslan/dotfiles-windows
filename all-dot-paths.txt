@@ -1,7 +1,7 @@
 [nushell]
 %APPDATA%\nushell\env.nu
 [alacritty]
-%APPDATA%\alacritty\alacritty.toml
+%APPDATA%\alacritty\alacritty.yml
 [wezterm]
 %USERPROFILE%\.config\wezterm\wezterm.lua
 or

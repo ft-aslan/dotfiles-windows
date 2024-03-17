@@ -811,6 +811,7 @@ require('lazy').setup({
 
       -- You can configure highlights by doing something like
       vim.cmd.hi 'Comment gui=none'
+      vim.cmd 'highlight CursorLineNr guifg=#e78a4e ctermfg=green'
     end,
   },
 

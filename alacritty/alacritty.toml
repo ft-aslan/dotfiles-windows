@@ -1,0 +1,17 @@
+import = ["./themes/gruvbox_material_hard_dark.toml"]
+#working_directory = "%userprofile%"
+[window]
+padding = { x = 2, y = 0 }
+[font]
+normal = { family = 'JetBrainsMono Nerd Font', style = "Regular" }
+size = 12
+offset = { x = 1, y = 1 }
+[shell]
+program = 'nu'
+[colors]
+cursor = { text = "#ffffff", cursor = "#f14c4c" }
+# key_bindings:
+#   - { key: Space, mods: Control, chars: "\x00" }
+#   - { key: V,              mods: Control,        action: Paste   }
+#   - { key: F,              mods: Control|Shift,    action: ReceiveChar    }
+#   - { key: F,              mods: Control|Shift|Alt, mode: ~Search,    action: SearchForward    }
