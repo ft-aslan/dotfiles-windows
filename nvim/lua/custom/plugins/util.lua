@@ -87,4 +87,19 @@ return {
       'nvim-telescope/telescope.nvim',
     },
   },
+  {
+    'Exafunction/codeium.vim',
+    event = 'BufEnter',
+  },
+  -- this nvim plugin just adds the suggestions to cmp
+  -- {
+  --   'Exafunction/codeium.nvim',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'hrsh7th/nvim-cmp',
+  --   },
+  --   config = function()
+  --     require('codeium').setup {}
+  --   end,
+  -- },
 }
