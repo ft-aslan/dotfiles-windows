@@ -102,6 +102,7 @@ vim.api.nvim_exec(
 )
 -- colors is for nvim-notify. 24-bit colors are required.
 vim.opt.termguicolors = true
+vim.o.mousemoveevent = true
 vim.opt.wrap = false
 
 vim.opt.swapfile = false

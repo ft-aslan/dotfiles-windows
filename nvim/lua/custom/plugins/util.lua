@@ -102,4 +102,9 @@ return {
   --     require('codeium').setup {}
   --   end,
   -- },
+  --
+  {
+    'soulis-1256/eagle.nvim',
+    opts = {},
+  },
 }
