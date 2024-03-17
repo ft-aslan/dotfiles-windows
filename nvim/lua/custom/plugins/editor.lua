@@ -62,7 +62,7 @@ return {
     'akinsho/toggleterm.nvim',
     version = '*',
 
-    opts = {},
+    opts = { shell = 'nu' },
     keys = {
       { '<leader>t', '<cmd>ToggleTerm<cr>', desc = 'Open terminal' },
     },
