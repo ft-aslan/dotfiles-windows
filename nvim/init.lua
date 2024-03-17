@@ -96,6 +96,12 @@ vim.g.maplocalleader = ' '
 vim.api.nvim_exec('language en_US', true)
 -- colors is for nvim-notify. 24-bit colors are required.
 vim.opt.termguicolors = true
+vim.opt.wrap = false
+
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.undodir = os.getenv 'USERPROFILE' .. '\\.vim\\undodir'
+vim.opt.undofile = true
 
 vim.keymap.set('i', 'jj', '<Esc>')
 vim.keymap.set('i', 'jk', '<Esc>')
