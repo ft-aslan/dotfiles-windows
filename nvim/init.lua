@@ -90,6 +90,27 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- NOTE: My Custom Configs
+
+-- Set Language to English
+vim.api.nvim_exec('language en_US', true)
+-- colors is for nvim-notify. 24-bit colors are required.
+vim.opt.termguicolors = true
+
+vim.keymap.set('i', 'jj', '<Esc>')
+vim.keymap.set('i', 'jk', '<Esc>')
+vim.keymap.set('i', 'kj', '<Esc>')
+-- Map L to $ and H to ^ in all modes
+vim.keymap.set('n', 'L', '$', { noremap = true, silent = true })
+vim.keymap.set('x', 'L', '$', { noremap = true, silent = true })
+vim.keymap.set('n', 'H', '^', { noremap = true, silent = true })
+vim.keymap.set('x', 'H', '^', { noremap = true, silent = true })
+-- <C-s> to save file
+vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-s>', ':w<CR>', { noremap = true, silent = true })
+-- Custom Config End
+--------------------------------------------------------------------------------------
+
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = true
 
@@ -238,7 +259,7 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim',    opts = {} },
+  { 'numToStr/Comment.nvim', opts = {} },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following lua:
@@ -249,11 +270,12 @@ require('lazy').setup({
     'lewis6991/gitsigns.nvim',
     opts = {
       signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
+        add = { text = '▎' },
+        change = { text = '▎' },
+        delete = { text = '' },
+        topdelete = { text = '' },
+        changedelete = { text = '▎' },
+        untracked = { text = '▎' },
       },
     },
   },
@@ -273,7 +295,7 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  {                     -- Useful plugin to show you pending keybinds.
+  { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -319,7 +341,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -369,6 +391,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -417,6 +440,11 @@ require('lazy').setup({
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
       { 'folke/neodev.nvim', opts = {} },
+    },
+    opts = {
+      diagnostics = {
+        signs = {},
+      },
     },
     config = function()
       -- Brief Aside: **What is LSP?**
@@ -692,7 +720,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -735,14 +763,14 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-    'folke/tokyonight.nvim',
-    lazy = false,    -- make sure we load this during startup if it is your main colorscheme
+    'sainnhe/gruvbox-material',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'gruvbox-material'
 
       -- You can configure highlights by doing something like
       vim.cmd.hi 'Comment gui=none'
@@ -860,20 +888,5 @@ require('lazy').setup({
     },
   },
 })
--- My Custom Configs
--- Set Language to English
-vim.api.nvim_exec('language en_US', true)
-vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('i', 'jj', '<Esc>')
-vim.keymap.set('i', 'jk', '<Esc>')
-vim.keymap.set('i', 'kj', '<Esc>')
--- Map L to $ and H to ^ in all modes
-vim.keymap.set('n', 'L', '$', { noremap = true, silent = true })
-vim.keymap.set('x', 'L', '$', { noremap = true, silent = true })
-vim.keymap.set('n', 'H', '^', { noremap = true, silent = true })
-vim.keymap.set('x', 'H', '^', { noremap = true, silent = true })
--- <C-s> to save file
-vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-s>', ':w<CR>', { noremap = true, silent = true })
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

@@ -1,12 +1,16 @@
 return {
   {
     'mg979/vim-visual-multi',
+
     version = '*',
+    -- opts = {}
   },
   {
     'windwp/nvim-autopairs',
+    event = 'VeryLazy',
     -- Optional dependency
     dependencies = { 'hrsh7th/nvim-cmp' },
+    opts = {},
     config = function()
       require('nvim-autopairs').setup {}
       -- If you want to automatically add `(` after selecting a function or method

@@ -1,9 +1,28 @@
+local trouble_colors = {
+  error = '#ff0000', -- Red color for errors
+  warning = '#ff8800', -- Orange color for warnings
+  info = '#00ffff', -- Cyan color for info messages
+  hint = '#ffff00', -- Yellow color for hints
+}
 return {
   {
     'folke/trouble.nvim',
-    event = 'VeryLazy',
     cmd = { 'TroubleToggle', 'Trouble' },
-    opts = { use_diagnostic_signs = true },
+    opts = {
+      signs = {
+        error = trouble_colors.error,
+        warning = trouble_colors.warning,
+        info = trouble_colors.info,
+        hint = trouble_colors.hint,
+      },
+      highlights = {
+        error = { fg = trouble_colors.error }, -- Text color for errors
+        warning = { fg = trouble_colors.warning }, -- Text color for warnings
+        info = { fg = trouble_colors.info }, -- Text color for info messages
+        hint = { fg = trouble_colors.hint }, -- Text color for hints
+      },
+      use_diagnostic_signs = true,
+    },
     keys = {
       { '<leader>xx', '<cmd>TroubleToggle document_diagnostics<cr>', desc = 'Document Diagnostics (Trouble)' },
       { '<leader>xX', '<cmd>TroubleToggle workspace_diagnostics<cr>', desc = 'Workspace Diagnostics (Trouble)' },
@@ -42,7 +61,7 @@ return {
   {
     'akinsho/toggleterm.nvim',
     version = '*',
-    event = 'VeryLazy',
+
     opts = {},
   },
 }
