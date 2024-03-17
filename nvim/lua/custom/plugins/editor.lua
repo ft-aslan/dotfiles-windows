@@ -63,6 +63,9 @@ return {
     version = '*',
 
     opts = {},
+    keys = {
+      { '<leader>t', '<cmd>ToggleTerm<cr>', desc = 'Open terminal' },
+    },
   },
   { 'mbbill/undotree' },
   {
