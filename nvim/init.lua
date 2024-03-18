@@ -749,6 +749,11 @@ require('lazy').setup({
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
 
+      -- cmp.setup.cmdline('/', { mapping = cmp.mapping.preset.cmdline() })
+      -- cmp.setup.cmdline(':', {
+      --   mapping = cmp.mapping.preset.cmdline(),
+      --   sources = { { name = 'path' }, {name = 'cmdline'} },
+      -- })
       cmp.setup {
         snippet = {
           expand = function(args)
