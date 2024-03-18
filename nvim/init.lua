@@ -117,8 +117,12 @@ vim.opt.undofile = true
 vim.keymap.set('i', 'jj', '<Esc>')
 vim.keymap.set('i', 'jk', '<Esc>')
 vim.keymap.set('i', 'kj', '<Esc>')
+vim.keymap.set('t', 'jj', [[<C-\><C-n>]])
+vim.keymap.set('t', 'jk', [[<C-\><C-n>]])
+vim.keymap.set('t', 'kj', [[<C-\><C-n>]])
 
 vim.keymap.set('n', '<C-a>', 'ggVG', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<leader>q', '<cmd>q<CR>', { noremap = true, silent = true })
 
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
@@ -126,10 +130,10 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
 vim.keymap.set('n', 'n', 'nzzzv', { noremap = true, silent = true })
 vim.keymap.set('n', 'N', 'Nzzzv', { noremap = true, silent = true })
 
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 
-vim.keymap.set('n', 'J', 'mzJ`z')
+vim.keymap.set('n', 'J', 'mzJ`z', { noremap = true, silent = true })
 -- -- greatest remap ever
 -- vim.keymap.set("x", "<leader>p", [["_dP]])
 --
@@ -160,8 +164,8 @@ vim.keymap.set('x', 'L', '$', { noremap = true, silent = true })
 vim.keymap.set('n', 'H', '^', { noremap = true, silent = true })
 vim.keymap.set('x', 'H', '^', { noremap = true, silent = true })
 -- <C-s> to save file
-vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-s>', ':w<CR>', { noremap = true, silent = true })
+vim.keymap.set('i', '<C-s>', '<Esc><cmd>w<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { noremap = true, silent = true })
 -- Custom Config End
 --------------------------------------------------------------------------------------
 
@@ -445,12 +449,12 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = '[S]earch [F]iles' })
+      -- vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
@@ -620,6 +624,13 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
+      local vue_typescript_plugin_location
+      if vim.fn.has 'win32' == 1 then
+        vue_typescript_plugin_location = os.getenv 'APPDATA' .. '\\npm\\node_modules\\@vue\\typescript-plugin'
+      else
+        vue_typescript_plugin_location = '/usr/local/lib/node_modules/@vue/typescript-plugin'
+      end
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -631,8 +642,25 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
+
+        -- this is for vue js and typescript
+        -- refer to this link https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#vue-support
+        tsserver = {
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vue_typescript_plugin_location,
+                languages = { 'javascript', 'typescript', 'vue' },
+              },
+            },
+          },
+          filetypes = {
+            'javascript',
+            'typescript',
+            'vue',
+          },
+        },
 
         lua_ls = {
           -- cmd = {...},
@@ -703,6 +731,22 @@ require('lazy').setup({
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         -- javascript = { { "prettierd", "prettier" } },
+        ['javascript'] = { { 'prettierd', 'prettier' } },
+        ['javascriptreact'] = { { 'prettierd', 'prettier' } },
+        ['typescript'] = { { 'prettierd', 'prettier' } },
+        ['typescriptreact'] = { { 'prettierd', 'prettier' } },
+        ['vue'] = { { 'prettierd', 'prettier' } },
+        ['css'] = { { 'prettierd', 'prettier' } },
+        ['scss'] = { { 'prettierd', 'prettier' } },
+        ['less'] = { { 'prettierd', 'prettier' } },
+        ['html'] = { { 'prettierd', 'prettier' } },
+        ['json'] = { { 'prettierd', 'prettier' } },
+        ['jsonc'] = { { 'prettierd', 'prettier' } },
+        ['yaml'] = { { 'prettierd', 'prettier' } },
+        ['markdown'] = { { 'prettierd', 'prettier' } },
+        ['markdown.mdx'] = { { 'prettierd', 'prettier' } },
+        ['graphql'] = { { 'prettierd', 'prettier' } },
+        ['handlebars'] = { { 'prettierd', 'prettier' } },
       },
     },
   },
