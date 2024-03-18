@@ -750,7 +750,7 @@ require('lazy').setup({
       luasnip.config.setup {}
 
       -- cmp.setup.cmdline('/', { mapping = cmp.mapping.preset.cmdline() })
-      -- cmp.setup.cmdline(':', {
+      -- cmp.setup.cmdline(
       --   mapping = cmp.mapping.preset.cmdline(),
       --   sources = { { name = 'path' }, {name = 'cmdline'} },
       -- })
@@ -760,6 +760,27 @@ require('lazy').setup({
             luasnip.lsp_expand(args.body)
           end,
         },
+        -- window = {
+        --   completion = {
+        --     border = 'rounded', -- single|rounded|none
+        --     -- custom colors
+        --     winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
+        --     side_padding = 1, -- padding at sides
+        --     col_offset = -1, -- move floating box left or right
+        --   },
+        --   documentation = {
+        --     border = 'rounded', -- single|rounded|none
+        --     -- custom colors
+        --     winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
+        --   },
+        -- },
+        -- formatting = {
+        --   fields = { 'abbr', 'kind', 'menu' },
+        --   format = function(entry, vim_item)
+        --     return vim_item
+        --   end,
+        --   expandable_indicator = true,
+        -- },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
         -- For an understanding of why these mappings were
