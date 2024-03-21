@@ -9,18 +9,15 @@ return {
     'folke/trouble.nvim',
     cmd = { 'TroubleToggle', 'Trouble' },
     opts = {
-      signs = {
-        error = trouble_colors.error,
-        warning = trouble_colors.warning,
-        info = trouble_colors.info,
-        hint = trouble_colors.hint,
-      },
-      highlights = {
-        error = { fg = trouble_colors.error }, -- Text color for errors
-        warning = { fg = trouble_colors.warning }, -- Text color for warnings
-        info = { fg = trouble_colors.info }, -- Text color for info messages
-        hint = { fg = trouble_colors.hint }, -- Text color for hints
-      },
+      -- signs = {
+      --   -- icons / text used for a diagnostic
+      --   error = ' ',
+      --   warning = ' ',
+      --   hint = ' ',
+      --   information = ' ',
+      --   other = '',
+      -- },
+
       use_diagnostic_signs = true,
     },
     keys = {

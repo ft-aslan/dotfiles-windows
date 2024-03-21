@@ -129,7 +129,6 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
 
 vim.keymap.set('n', 'n', 'nzzzv', { noremap = true, silent = true })
 vim.keymap.set('n', 'N', 'Nzzzv', { noremap = true, silent = true })
-
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 
@@ -166,6 +165,75 @@ vim.keymap.set('x', 'H', '^', { noremap = true, silent = true })
 -- <C-s> to save file
 vim.keymap.set('i', '<C-s>', '<Esc><cmd>w<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { noremap = true, silent = true })
+
+local defaults = {
+  icons = {
+    diagnostics = {
+      Error = ' ',
+      Warn = ' ',
+      Hint = ' ',
+      Info = ' ',
+    },
+    git = {
+      added = ' ',
+      modified = ' ',
+      removed = ' ',
+    },
+    dap = {
+      Stopped = { ' ', 'DiagnosticError', 'DapStoppedLine' },
+      Breakpoint = ' ',
+      BreakpointCondition = ' ',
+      BreakpointRejected = { ' ', 'DiagnosticError' },
+      LogPoint = '.>',
+    },
+    kinds = {
+      Array = ' ',
+      Boolean = '󰨙 ',
+      Class = ' ',
+      Codeium = '󰘦 ',
+      Color = ' ',
+      Control = ' ',
+      Collapsed = ' ',
+      Constant = '󰏿 ',
+      Constructor = ' ',
+      Copilot = ' ',
+      Enum = ' ',
+      EnumMember = ' ',
+      Event = ' ',
+      Field = ' ',
+      File = ' ',
+      Folder = ' ',
+      Function = '󰊕 ',
+      Interface = ' ',
+      Key = ' ',
+      Keyword = ' ',
+      Method = '󰊕 ',
+      Module = ' ',
+      Namespace = '󰦮 ',
+      Null = ' ',
+      Number = '󰎠 ',
+      Object = ' ',
+      Operator = ' ',
+      Package = ' ',
+      Property = ' ',
+      Reference = ' ',
+      Snippet = ' ',
+      String = ' ',
+      Struct = '󰆼 ',
+      TabNine = '󰏚 ',
+      Text = ' ',
+      TypeParameter = ' ',
+      Unit = ' ',
+      Value = ' ',
+      Variable = '󰀫 ',
+    },
+  },
+}
+-- diagnostics
+for name, icon in pairs(defaults.icons.diagnostics) do
+  name = 'DiagnosticSign' .. name
+  vim.fn.sign_define(name, { text = icon, texthl = name, numhl = '' })
+end
 -- Custom Config End
 --------------------------------------------------------------------------------------
 
@@ -452,7 +520,7 @@ require('lazy').setup({
       -- vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>s/', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -826,13 +894,23 @@ require('lazy').setup({
         --     winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
         --   },
         -- },
-        -- formatting = {
-        --   fields = { 'abbr', 'kind', 'menu' },
-        --   format = function(entry, vim_item)
-        --     return vim_item
-        --   end,
-        --   expandable_indicator = true,
-        -- },
+
+        formatting = {
+          fields = { 'kind', 'abbr', 'menu' },
+          expandable_indicator = true,
+          format = function(_, item)
+            local icons = defaults.icons.kinds
+            if icons[item.kind] then
+              item.kind = icons[item.kind] .. item.kind
+            end
+            return item
+          end,
+        },
+        experimental = {
+          ghost_text = {
+            hl_group = 'CmpGhostText',
+          },
+        },
         completion = { completeopt = 'menu,menuone,noinsert' },
 
         -- For an understanding of why these mappings were
