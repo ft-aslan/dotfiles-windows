@@ -900,8 +900,9 @@ require('lazy').setup({
           expandable_indicator = true,
           format = function(_, item)
             local icons = defaults.icons.kinds
+            item.menu = item.kind
             if icons[item.kind] then
-              item.kind = icons[item.kind] .. item.kind
+              item.kind = icons[item.kind] .. ' '
             end
             return item
           end,
