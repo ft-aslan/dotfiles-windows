@@ -11,10 +11,11 @@ local set_hi_groups = function()
   vim.cmd [[hi! DiagnosticWarn guifg=#fabd2f ]]
   vim.cmd [[hi! DiagnosticInfo guifg=#83a598 ]]
   vim.cmd [[hi! DiagnosticHint guifg=#8ec07c ]]
-
+  vim.cmd [[hi! guicursor guibg=#f14c4c guifg=#000000 ]]
   -- cmp
-  vim.cmd [[ hi! PmenuSel guibg=#32302f guifg=NONE ]]
-  vim.cmd [[ hi! Pmenu guibg=#32302f guifg=#d5c4a1 ]]
+  -- vim.cmd [[ hi! PmenuSel guibg=#32302f guifg=NONE ]]
+  -- vim.cmd [[ hi! Pmenu guibg=#32302f guifg=#d5c4a1 ]]
+  vim.cmd [[ hi! CursorLineBG guibg=#32302f guifg=#83a598 ]]
   vim.cmd [[ hi! CmpItemAbbrDeprecated guibg=#32302f guifg=#83a598 gui=strikethrough ]]
   vim.cmd [[ hi! CmpItemKindField guibg=#32302f guifg=#bdae93 ]]
   vim.cmd [[ hi! CmpItemKindProperty guibg=#32302f guifg=#fbf1c7 ]]

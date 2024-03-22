@@ -100,6 +100,7 @@ vim.api.nvim_exec(
 ]],
   false
 )
+vim.o.guifont = 'JetBrainsMono Nerd Font:h12'
 -- colors is for nvim-notify. 24-bit colors are required.
 vim.opt.termguicolors = true
 vim.o.mousemoveevent = true
@@ -336,7 +337,6 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -704,6 +704,10 @@ require('lazy').setup({
       local vue_typescript_plugin_location
       if vim.fn.has 'win32' == 1 then
         vue_typescript_plugin_location = os.getenv 'APPDATA' .. '\\npm\\node_modules\\@vue\\typescript-plugin'
+        if vim.fn.isdirectory(vue_typescript_plugin_location) == 0 then
+          -- TODO: make this one better. The nodejs this may not be in this path
+          vue_typescript_plugin_location = 'C:\\Program Files\\nodejs\\node_modules\\@vue\\typescript-plugin'
+        end
       else
         vue_typescript_plugin_location = '/usr/local/lib/node_modules/@vue/typescript-plugin'
       end
@@ -862,39 +866,45 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
+      'hrsh7th/cmp-buffer',
+      -- 'hrsh7th/cmp-nvim-lua',
     },
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
-
-      -- cmp.setup.cmdline('/', { mapping = cmp.mapping.preset.cmdline() })
-      -- cmp.setup.cmdline(
-      --   mapping = cmp.mapping.preset.cmdline(),
-      --   sources = { { name = 'path' }, {name = 'cmdline'} },
-      -- })
+      cmp.setup.cmdline('/', { mapping = cmp.mapping.preset.cmdline(), sources = {
+        { name = 'buffer', max_item_count = 7 },
+      } })
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = { { name = 'path' }, { name = 'cmdline', max_item_count = 7 } },
+        formatting = {
+          fields = { 'abbr' },
+        },
+      })
       cmp.setup {
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end,
         },
-        -- window = {
-        --   completion = {
-        --     border = 'rounded', -- single|rounded|none
-        --     -- custom colors
-        --     winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
-        --     side_padding = 1, -- padding at sides
-        --     col_offset = -1, -- move floating box left or right
-        --   },
-        --   documentation = {
-        --     border = 'rounded', -- single|rounded|none
-        --     -- custom colors
-        --     winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
-        --   },
-        -- },
-
+        window = {
+          completion = {
+            border = 'none', -- single|rounded|none
+            -- custom colors
+            winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
+            side_padding = 1, -- padding at sides
+            col_offset = -1, -- move floating box left or right
+          },
+          documentation = {
+            border = 'none', -- single|rounded|none
+            -- custom colors
+            winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
+          },
+        },
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
           expandable_indicator = true,
@@ -907,13 +917,13 @@ require('lazy').setup({
             return item
           end,
         },
-        experimental = {
-          ghost_text = {
-            hl_group = 'CmpGhostText',
-          },
-        },
-        completion = { completeopt = 'menu,menuone,noinsert' },
+        -- experimental = {
+        --   ghost_text = {
+        --     hl_group = 'CmpGhostText',
+        --   },
+        -- },
 
+        completion = { completeopt = 'menu,menuone,noinsert' },
         -- For an understanding of why these mappings were
         -- chosen, you will need to read `:help ins-completion`
         --
@@ -982,7 +992,6 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'gruvbox-material'
-
       -- You can configure highlights by doing something like
       vim.cmd.hi 'Comment gui=none'
       vim.cmd.hi 'CursorLineNr guifg=#e78a4e ctermfg=green'
@@ -1010,7 +1019,7 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- require('mini.surround').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
