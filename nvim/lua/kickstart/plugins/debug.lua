@@ -9,6 +9,7 @@
 return {
   -- NOTE: Yes, you can install new plugins here!
   'mfussenegger/nvim-dap',
+  event = 'BufReadPre',
   -- NOTE: And you can specify dependencies as well
   dependencies = {
     'nvim-neotest/nvim-nio',

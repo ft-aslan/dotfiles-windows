@@ -986,6 +986,8 @@ require('lazy').setup({
       -- You can configure highlights by doing something like
       vim.cmd.hi 'Comment gui=none'
       vim.cmd.hi 'CursorLineNr guifg=#e78a4e ctermfg=green'
+      local hi_groups = require 'custom.highlights.gruvbox-material'
+      hi_groups()
     end,
   },
 

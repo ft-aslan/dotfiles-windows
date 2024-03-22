@@ -68,7 +68,7 @@ return {
   { 'kkharji/sqlite.lua' },
   {
     'jackMort/ChatGPT.nvim',
-    event = 'VeryLazy',
+    event = 'BufReadPre',
     config = function()
       local api_key
       if os.getenv 'OS' == 'Windows_NT' then

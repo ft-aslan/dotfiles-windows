@@ -1,7 +1,9 @@
 -- This is for Neo-tree
 -- Unless you are still migrating, remove the deprecated commands from v1.x
 vim.cmd [[ let g:neo_tree_remove_legacy_commands = 1 ]]
-
+-- recommended settings from nvim-tree documentation
+vim.g.loaded = 1
+vim.g.loaded_netrwPlugin = 1
 return {
   {
     'nvim-neo-tree/neo-tree.nvim',
