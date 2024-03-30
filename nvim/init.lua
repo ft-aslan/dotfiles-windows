@@ -92,6 +92,11 @@ vim.g.maplocalleader = ' '
 
 -- NOTE: My Custom Configs
 
+-- Neovide Config
+if vim.g.neovide then
+  vim.g.neovide_cursor_animate_in_insert_mode = false
+end
+
 -- Set Language to English
 vim.api.nvim_exec(
   [[
@@ -739,6 +744,10 @@ require('lazy').setup({
             'javascript',
             'typescript',
             'vue',
+            'javascriptreact',
+            'typescriptreact',
+            'svelte',
+            'vue.html.javascript.ts',
           },
         },
 
@@ -875,11 +884,18 @@ require('lazy').setup({
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
-      cmp.setup.cmdline('/', { mapping = cmp.mapping.preset.cmdline(), sources = {
-        { name = 'buffer', max_item_count = 7 },
-      } })
-      cmp.setup.cmdline(':', {
+      cmp.setup.cmdline('/', {
+        completion = { completeopt = 'menu,menuone,noselect,noinsert' },
         mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer', max_item_count = 7 },
+        },
+      })
+      cmp.setup.cmdline(':', {
+        completion = { completeopt = 'menu,menuone,noselect,noinsert' },
+        mapping = cmp.mapping.preset.cmdline {
+          -- ['<Tab>'] = cmp.mapping.confirm { select = false },
+        },
         sources = { { name = 'path' }, { name = 'cmdline', max_item_count = 7 } },
         formatting = {
           fields = { 'abbr' },
