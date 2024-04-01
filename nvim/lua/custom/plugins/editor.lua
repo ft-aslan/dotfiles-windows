@@ -90,7 +90,7 @@ return {
       vim.keymap.set('n', '<leader>sr', require('spectre').open, { desc = 'Open Spectre' })
       -- vim.keymap.set('n', '<leader>sw', require('spectre').open_visual, { desc = 'Search current word' })
       -- vim.keymap.set('v', '<leader>sw', require('spectre').open_visual, { desc = 'Search current word' })
-      vim.keymap.set('n', '<leader>sp', require('spectre').open_file_search, { desc = 'Search current file' })
+      vim.keymap.set('n', '<leader>s/', require('spectre').open_file_search, { desc = 'Search current file' })
     end,
   },
 }

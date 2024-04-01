@@ -24,7 +24,7 @@ return {
     },
   },
   -- library used by other plugins
-  -- { 'nvim-lua/plenary.nvim', lazy = true },
+  { 'nvim-lua/plenary.nvim' },
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
@@ -151,8 +151,41 @@ return {
     end,
   },
   {
-    'folke/persistence.nvim',
-    event = 'BufReadPre', -- this will only start session saving when an actual file was opened
-    opts = {},
+    'gnikdroy/projections.nvim',
+    branch = 'dev',
+    config = function()
+      require('projections').setup {
+        workspaces = {
+          { path = '~/Projects', patterns = {} },
+        },
+        selector_mapping = '<leader>sp',
+        show_preview = true,
+      }
+
+      -- close existing language servers when you switch projects.
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'ProjectionsPreStoreSession',
+        callback = function()
+          vim.lsp.stop_client(vim.lsp.get_clients())
+        end,
+      })
+
+      -- close file tree before saving
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'ProjectionsPreStoreSession',
+        callback = function()
+          -- nvim-tree
+          local nvim_tree_present, api = pcall(require, 'nvim-tree.api')
+          if nvim_tree_present then
+            api.tree.close()
+          end
+
+          -- neo-tree
+          if pcall(require, 'neo-tree') then
+            vim.cmd [[Neotree action=close]]
+          end
+        end,
+      })
+    end,
   },
 }
