@@ -1,7 +1,8 @@
 
   -- icons used by other plugins
   -- stylua: ignore
-  local defaults = {icons = {
+  local defaults = {
+    icons = {
     misc = {
       dots = "󰇘",
     },
@@ -102,3 +103,4 @@
     },
   },
 }
+return defaults

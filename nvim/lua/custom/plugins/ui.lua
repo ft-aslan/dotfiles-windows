@@ -135,15 +135,25 @@ return {
   -- statusline
   {
     'nvim-lualine/lualine.nvim',
-
-    opts = {
-      sections = {
-        lualine_c = {
-          { 'filename', path = 1 }, -- Show only the file name
-          { 'filetype' },
+    dependencies = { 'nvim-tree/nvim-web-devicons', 'folke/noice.nvim' },
+    event = 'VeryLazy',
+    config = function()
+      require('lualine').setup {
+        sections = {
+          lualine_x = {
+            {
+              require('noice').api.statusline.mode.get,
+              cond = require('noice').api.statusline.mode.has,
+              color = { fg = '#ff9e64' },
+            },
+          },
+          lualine_c = {
+            { 'filename', path = 1 }, -- Show only the file name
+            { 'filetype' },
+          },
         },
-      },
-    },
+      }
+    end,
   },
 
   -- indent guides for Neovim
@@ -197,7 +207,7 @@ return {
       routes = {
         {
           filter = {
-            event = 'msg_show',
+            event = 'msg_showmode',
             any = {
               { find = '%d+L, %d+B' },
               { find = '; after #%d+' },
