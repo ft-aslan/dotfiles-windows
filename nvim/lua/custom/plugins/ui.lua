@@ -203,6 +203,11 @@ return {
           ['vim.lsp.util.stylize_markdown'] = true,
           ['cmp.entry.get_documentation'] = true,
         },
+        hover = {
+          -- Set not show a message if hover is not available
+          -- ex: shift+k on Typescript code
+          silent = true,
+        },
       },
       routes = {
         {
