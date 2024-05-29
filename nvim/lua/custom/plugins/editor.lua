@@ -58,10 +58,11 @@ return {
   {
     'akinsho/toggleterm.nvim',
     version = '*',
-
+    config = true,
     opts = { shell = 'nu' },
     keys = {
       { '<leader>t', '<cmd>ToggleTerm<cr>', desc = 'Open terminal' },
+      -- { '<silent><C-t>', '<cmd>exe v:count1 .. "ToggleTerm"<CR>', desc = 'Open terminal' },
     },
   },
   { 'mbbill/undotree' },

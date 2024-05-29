@@ -7,7 +7,7 @@ normal = { family = 'JetBrainsMono Nerd Font', style = "Regular" }
 size = 12
 offset = { x = 0, y = 1 }
 [shell]
-program = 'nu'
+program = 'pwsh'
 [colors]
 cursor = { text = "#ffffff", cursor = "#f14c4c" }
 # key_bindings:
