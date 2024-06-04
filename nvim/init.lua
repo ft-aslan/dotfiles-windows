@@ -382,13 +382,16 @@ if vim.g.vscode then
   local vscode = require 'vscode-neovim'
 
   vim.keymap.set('n', '<leader>e', function()
-    vscode.action 'workbench.files.action.focusFilesExplorer'
+    vscode.action 'workbench.action.toggleSidebarVisibility'
   end)
   vim.keymap.set('n', '<leader>t', function()
     vscode.action 'workbench.action.terminal.focusNext'
   end)
   vim.keymap.set('n', '<leader>p', function()
     vscode.action 'workbench.action.showCommands'
+  end)
+  vim.keymap.set('n', '<leader>gg', function()
+    vscode.action 'workbench.view.scm'
   end)
 
   vim.keymap.set('n', '<leader>sf', function()
@@ -478,7 +481,7 @@ else
     --    require('Comment').setup({})
 
     -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim', opts = {} },
+    { 'numToStr/Comment.nvim',    opts = {} },
 
     -- Here is a more advanced example where we pass configuration
     -- options to `gitsigns.nvim`. This is equivalent to the following lua:
@@ -514,7 +517,7 @@ else
     -- after the plugin has been loaded:
     --  config = function() ... end
 
-    { -- Useful plugin to show you pending keybinds.
+    {                     -- Useful plugin to show you pending keybinds.
       'folke/which-key.nvim',
       event = 'VimEnter', -- Sets the loading event to 'VimEnter'
       config = function() -- This is the function that runs, AFTER loading
@@ -563,7 +566,7 @@ else
         { 'nvim-telescope/telescope-ui-select.nvim' },
 
         -- Useful for getting pretty icons, but requires a Nerd Font.
-        { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+        { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
       },
       config = function()
         -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -1001,14 +1004,14 @@ else
           },
           window = {
             completion = {
-              border = 'none', -- single|rounded|none
+              border = 'none',                                                                            -- single|rounded|none
               -- custom colors
               winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
-              side_padding = 1, -- padding at sides
-              col_offset = -1, -- move floating box left or right
+              side_padding = 1,                                                                           -- padding at sides
+              col_offset = -1,                                                                            -- move floating box left or right
             },
             documentation = {
-              border = 'none', -- single|rounded|none
+              border = 'none',                                                                            -- single|rounded|none
               -- custom colors
               winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
             },
@@ -1093,7 +1096,7 @@ else
       --
       -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
       'sainnhe/gruvbox-material',
-      lazy = false, -- make sure we load this during startup if it is your main colorscheme
+      lazy = false,    -- make sure we load this during startup if it is your main colorscheme
       priority = 1000, -- make sure to load this before all the other start plugins
       init = function()
         -- Load the colorscheme here.
