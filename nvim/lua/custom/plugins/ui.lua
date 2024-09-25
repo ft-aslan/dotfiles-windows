@@ -82,6 +82,7 @@ return {
   {
     'akinsho/bufferline.nvim',
     event = 'VeryLazy',
+    enabled = false,
     version = '*',
     dependencies = 'nvim-tree/nvim-web-devicons',
     keys = {
@@ -90,9 +91,8 @@ return {
       { '<leader>bo', '<Cmd>BufferLineCloseOthers<CR>', desc = 'Delete other buffers' },
       { '<leader>br', '<Cmd>BufferLineCloseRight<CR>', desc = 'Delete buffers to the right' },
       { '<leader>bl', '<Cmd>BufferLineCloseLeft<CR>', desc = 'Delete buffers to the left' },
-      { '<leader>bd', '<Cmd>bd<CR>', desc = 'Delete current buffer' },
-      -- { '<S-h>', '<cmd>BufferLineCyclePrev<cr>', desc = 'Prev buffer' },
-      -- { '<S-l>', '<cmd>BufferLineCycleNext<cr>', desc = 'Next buffer' },
+      { '<leader>bd', '<Cmd>BufferClose<CR>', desc = 'Delete current buffer' },
+      { '<C-x>', '<Cmd>BufferClose<CR>', desc = 'Delete current buffer' },
       { '[b', '<cmd>BufferLineCyclePrev<cr>', desc = 'Prev buffer' },
       { ']b', '<cmd>BufferLineCycleNext<cr>', desc = 'Next buffer' },
     },
@@ -131,7 +131,60 @@ return {
       })
     end,
   },
-
+  {
+    'romgrk/barbar.nvim',
+    event = 'BufEnter',
+    dependencies = {
+      'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
+      'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
+    },
+    keys = {
+      { '<leader>bp', '<Cmd>BufferPin<CR>', desc = 'Toggle pin' },
+      { '<leader>bP', '<Cmd>BufferCloseAllButPinned<CR>', desc = 'Delete non-pinned buffers' },
+      { '<leader>bo', '<Cmd>BufferCloseAllButCurrent<CR>', desc = 'Delete other buffers' },
+      { '<leader>br', '<Cmd>BufferCloseBuffersRight<CR>', desc = 'Delete buffers to the right' },
+      { '<leader>bl', '<Cmd>BufferCloseBuffersLeft<CR>', desc = 'Delete buffers to the left' },
+      { '<leader>bd', '<Cmd>BufferClose<CR>', desc = 'Delete current buffer' },
+      { '<leader>bb', '<Cmd>BufferPick<CR>', desc = 'Buffer picker' },
+      { '<C-x>', '<Cmd>BufferClose<CR>', desc = 'Delete current buffer' },
+      { '[b', '<cmd>BufferPrevious<cr>', desc = 'Prev buffer' },
+      { ']b', '<cmd>BufferNext<cr>', desc = 'Next buffer' },
+    },
+    init = function()
+      vim.g.barbar_auto_setup = false
+    end,
+    opts = {
+      -- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
+      -- animation = true,
+      -- insert_at_start = true,
+      -- …etc.
+      sidebar_filetypes = {
+        ['neo-tree'] = { event = 'BufWipeout' },
+      },
+      icons = {
+        diagnostics = {
+          [vim.diagnostic.severity.ERROR] = { enabled = true },
+          [vim.diagnostic.severity.WARN] = { enabled = false },
+          [vim.diagnostic.severity.INFO] = { enabled = false },
+          [vim.diagnostic.severity.HINT] = { enabled = true },
+        },
+      },
+    },
+    version = '^1.0.0', -- optional: only update when a new 1.x version is released
+  },
+  -- winbar
+  {
+    'utilyre/barbecue.nvim',
+    name = 'barbecue',
+    enabled = false,
+    event = 'VeryLazy',
+    version = '*',
+    dependencies = {
+      'SmiteshP/nvim-navic',
+      'nvim-tree/nvim-web-devicons', -- optional dependency
+    },
+    opts = {},
+  },
   -- statusline
   {
     'nvim-lualine/lualine.nvim',
@@ -142,8 +195,22 @@ return {
         sections = {
           lualine_x = {
             {
-              require('noice').api.statusline.mode.get,
-              cond = require('noice').api.statusline.mode.has,
+              require('noice').api.status.message.get_hl,
+              cond = require('noice').api.status.message.has,
+            },
+            {
+              require('noice').api.status.command.get,
+              cond = require('noice').api.status.command.has,
+              color = { fg = '#ff9e64' },
+            },
+            {
+              require('noice').api.status.mode.get,
+              cond = require('noice').api.status.mode.has,
+              color = { fg = '#ff9e64' },
+            },
+            {
+              require('noice').api.status.search.get,
+              cond = require('noice').api.status.search.has,
               color = { fg = '#ff9e64' },
             },
           },
@@ -290,12 +357,14 @@ return {
           header = vim.split(logo, '\n'),
           -- stylua: ignore
           center = {
+            { action = 'lua require("auto-session.session-lens").search_session()', desc = " Search Projects", icon = " ", key = "p" },
             { action = "Telescope find_files", desc = " Find file", icon = " ", key = "f" },
             { action = "ene | startinsert", desc = " New file", icon = " ", key = "n" },
             { action = "Telescope oldfiles", desc = " Recent files", icon = " ", key = "r" },
             { action = "Telescope live_grep", desc = " Find text", icon = " ", key = "g" },
+            { action = "Autosession delete", desc = " Delete session", icon = " ", key = "d" },
             { action = "e $MYVIMRC | cd %:p:h", desc = " Config", icon = " ", key = "c" },
-            { action = 'lua require("persistence").load()', desc = " Restore Session", icon = " ", key = "s" },
+            -- { action = 'lua require("persistence").load()', desc = " Restore Session", icon = " ", key = "s" },
             { action = "Lazy", desc = " Lazy", icon = "󰒲 ", key = "l" },
             { action = "qa", desc = " Quit", icon = " ", key = "q" },
           },

@@ -94,7 +94,13 @@ vim.g.maplocalleader = ' '
 
 -- Neovide Config
 if vim.g.neovide then
+  vim.g.neovide_no_custom_clipboard = false
+  vim.o.guifont = 'JetBrainsMono Nerd Font:h11'
   vim.g.neovide_cursor_animate_in_insert_mode = false
+  local default_path = vim.fn.expand '~'
+  vim.api.nvim_set_current_dir(default_path)
+else
+  vim.o.guifont = 'JetBrainsMono Nerd Font:h12'
 end
 
 -- Set Language to English
@@ -105,7 +111,6 @@ vim.api.nvim_exec(
 ]],
   false
 )
-vim.o.guifont = 'JetBrainsMono Nerd Font:h12'
 -- colors is for nvim-notify. 24-bit colors are required.
 vim.opt.termguicolors = true
 vim.o.mousemoveevent = true
@@ -268,7 +273,20 @@ vim.opt.showmode = false
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
 vim.opt.clipboard = 'unnamedplus'
-
+if vim.fn.has 'wsl' == 1 then
+  vim.g.clipboard = {
+    name = 'win32yank-wsl',
+    copy = {
+      ['+'] = 'win32yank.exe -i --crlf',
+      ['*'] = 'win32yank.exe -i --crlf',
+    },
+    paste = {
+      ['+'] = 'win32yank.exe -o --lf',
+      ['*'] = 'win32yank.exe -o --lf',
+    },
+    cache_enabled = 0,
+  }
+end
 -- Enable break indent
 vim.opt.breakindent = true
 
@@ -447,6 +465,11 @@ if vim.g.vscode then
   vim.keymap.set('n', '<leader>cr', function()
     vscode.action 'editor.action.rename'
   end)
+  vim.keymap.set({ 'n', 'x', 'i' }, '<C-n>', function()
+    vscode.with_insert(function()
+      vscode.action 'editor.action.addSelectionToNextFindMatch'
+    end)
+  end)
   vim.keymap.set('n', 'gn', 'mciw*<Cmd>nohl<CR>', { remap = true })
   require('lazy').setup {
     {
@@ -481,7 +504,7 @@ else
     --    require('Comment').setup({})
 
     -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim',    opts = {} },
+    { 'numToStr/Comment.nvim', opts = {} },
 
     -- Here is a more advanced example where we pass configuration
     -- options to `gitsigns.nvim`. This is equivalent to the following lua:
@@ -517,23 +540,33 @@ else
     -- after the plugin has been loaded:
     --  config = function() ... end
 
-    {                     -- Useful plugin to show you pending keybinds.
+    { -- Useful plugin to show you pending keybinds.
       'folke/which-key.nvim',
       event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-      config = function() -- This is the function that runs, AFTER loading
-        require('which-key').setup()
-
-        -- Document existing key chains
-        require('which-key').register {
-          ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-          ['<leader>b'] = { name = '[B]uffer', _ = 'which_key_ignore' },
-          ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-          ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-          ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-          ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-          ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-          ['<leader>x'] = { name = '[X]Trouble', _ = 'which_key_ignore' },
-        }
+      opts = {
+        defaults = {},
+        preset = 'classic',
+        spec = {
+          {
+            mode = { 'n', 'v' },
+            { '<leader>a', group = 'AI' },
+            { '<leader>c', group = 'Code' },
+            { '<leader>f', group = 'File/Find' },
+            { '<leader>b', group = 'Buffer' },
+            { '<leader>g', group = 'Git' },
+            { '<leader>d', group = 'Document' },
+            { '<leader>r', group = 'Rename' },
+            { '<leader>s', group = 'Search' },
+            { '<leader>t', group = 'Test' },
+            { '<leader><tab>', group = 'Tabs' },
+            { '<leader>u', group = 'UI' },
+            { '<leader>w', group = 'Workspace' },
+            { '<leader>x', group = 'Diagnostics' },
+          },
+        },
+      },
+      config = function(_, opts) -- This is the function that runs, AFTER loading
+        require('which-key').setup(opts)
       end,
     },
 
@@ -564,9 +597,10 @@ else
           end,
         },
         { 'nvim-telescope/telescope-ui-select.nvim' },
+        { 'folke/noice.nvim' },
 
         -- Useful for getting pretty icons, but requires a Nerd Font.
-        { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+        { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
       },
       config = function()
         -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -600,6 +634,57 @@ else
           --   },
           -- },
           -- pickers = {}
+          defaults = {
+            vimgrep_arguments = {
+              'rg',
+              '-L',
+              '--color=never',
+              '--no-heading',
+              '--with-filename',
+              '--line-number',
+              '--column',
+              '--smart-case',
+            },
+            prompt_prefix = '   ',
+            selection_caret = '  ',
+            entry_prefix = '  ',
+            initial_mode = 'insert',
+            selection_strategy = 'reset',
+            sorting_strategy = 'ascending',
+            layout_strategy = 'horizontal',
+            layout_config = {
+              horizontal = {
+                prompt_position = 'top',
+                preview_width = 0.55,
+                results_width = 0.8,
+              },
+              vertical = {
+                mirror = false,
+              },
+              width = 0.87,
+              height = 0.80,
+              preview_cutoff = 120,
+            },
+            file_sorter = require('telescope.sorters').get_fuzzy_file,
+            -- file_ignore_patterns = { 'node_modules' },
+            generic_sorter = require('telescope.sorters').get_generic_fuzzy_sorter,
+            path_display = { 'truncate' },
+            winblend = 0,
+            border = {},
+            borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+            color_devicons = true,
+            set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
+            file_previewer = require('telescope.previewers').vim_buffer_cat.new,
+            grep_previewer = require('telescope.previewers').vim_buffer_vimgrep.new,
+            qflist_previewer = require('telescope.previewers').vim_buffer_qflist.new,
+            -- Developer configurations: Not meant for general override
+            buffer_previewer_maker = require('telescope.previewers').buffer_previewer_maker,
+            mappings = {
+              n = { ['q'] = require('telescope.actions').close },
+            },
+          },
+
+          extensions_list = { 'themes', 'terms' },
           extensions = {
             ['ui-select'] = {
               require('telescope.themes').get_dropdown(),
@@ -610,14 +695,16 @@ else
         -- Enable telescope extensions, if they are installed
         pcall(require('telescope').load_extension, 'fzf')
         pcall(require('telescope').load_extension, 'ui-select')
+        pcall(require('telescope').load_extension, 'noice')
 
         -- See `:help telescope.builtin`
         local builtin = require 'telescope.builtin'
         vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
         vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
         vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-        -- vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = '[S]earch [F]iles' })
-        vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+        vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[F]ind [F]iles' })
+        vim.keymap.set('n', '<leader>fg', builtin.git_files, { desc = '[F]ind [G]it Files' })
+        vim.keymap.set('n', '<leader>st', builtin.builtin, { desc = '[S]earch Select [T]elescope' })
         vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
         vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
         vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -668,8 +755,22 @@ else
         { 'folke/neodev.nvim', opts = {} },
       },
       opts = {
+        -- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
+        -- Be aware that you also will need to properly configure your LSP server to
+        -- provide the inlay hints.
+        inlay_hints = {
+          enabled = true,
+        },
         diagnostics = {
           severity_sort = true,
+          virtual_text = {
+            spacing = 4,
+            source = 'if_many',
+            prefix = '●',
+            -- this will set set the prefix to a function that returns the diagnostics icon based on the severity
+            -- this only works on a recent 0.10.0 build. Will be set to "●" when not supported
+            -- prefix = "icons",
+          },
           signs = {
             text = {
               [vim.diagnostic.severity.ERROR] = ' ',
@@ -680,7 +781,7 @@ else
           },
         },
       },
-      config = function()
+      config = function(_, opts)
         -- Brief Aside: **What is LSP?**
         --
         -- LSP is an acronym you've probably heard, but might not understand what it is.
@@ -746,16 +847,16 @@ else
 
             -- Fuzzy find all the symbols in your current workspace
             --  Similar to document symbols, except searches over your whole project.
-            map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+            map('<leader>ss', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[S]earch [S]ymbols')
 
             -- Rename the variable under your cursor
             --  Most Language Servers support renaming across files, etc.
-            map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+            map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
 
             -- Execute a code action, usually your cursor needs to be on top of an error
             -- or a suggestion from your LSP for this to activate.
             map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
+            map('<leader>cd', vim.diagnostic.open_float, '[C]ode Diagnostics')
             -- Opens a popup that displays documentation about the word under your cursor
             --  See `:help K` for why this keymap
             map('K', vim.lsp.buf.hover, 'Hover Documentation')
@@ -811,6 +912,16 @@ else
         else
           vue_typescript_plugin_location = '/usr/local/lib/node_modules/@vue/typescript-plugin'
         end
+        local on_svelte_attach = function(client, bufnr)
+          vim.api.nvim_create_autocmd('BufWritePost', {
+            pattern = { '*.js', '*.ts' },
+            group = vim.api.nvim_create_augroup('svelte_ondidchangetsorjsfile', { clear = true }),
+            callback = function(ctx)
+              -- Here use ctx.match instead of ctx.file
+              client.notify('$/onDidChangeTsOrJsFile', { uri = ctx.match })
+            end,
+          })
+        end
         local servers = {
           -- clangd = {},
           -- gopls = {},
@@ -825,7 +936,7 @@ else
 
           -- this is for vue js and typescript
           -- refer to this link https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#vue-support
-          tsserver = {
+          ts_ls = {
             init_options = {
               plugins = {
                 {
@@ -844,6 +955,10 @@ else
               'svelte',
               'vue.html.javascript.ts',
             },
+          },
+
+          svelte = {
+            on_attach = on_svelte_attach,
           },
 
           lua_ls = {
@@ -890,6 +1005,46 @@ else
             end,
           },
         }
+
+        -- WARN: We gonna add inlay hints here. This code is example from LazyVim. But it is not working. Its not compatible with this config yet.
+
+        -- if vim.fn.has 'nvim-0.10' == 1 then
+        --   -- inlay hints
+        --   if opts.inlay_hints.enabled then
+        --     LazyVim.lsp.on_supports_method('textDocument/inlayHint', function(client, buffer)
+        --       if
+        --         vim.api.nvim_buf_is_valid(buffer)
+        --         and vim.bo[buffer].buftype == ''
+        --         and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
+        --       then
+        --         LazyVim.toggle.inlay_hints(buffer, true)
+        --       end
+        --     end)
+        --   end
+        --
+        --   -- code lens
+        --   if opts.codelens.enabled and vim.lsp.codelens then
+        --     LazyVim.lsp.on_supports_method('textDocument/codeLens', function(client, buffer)
+        --       vim.lsp.codelens.refresh()
+        --       vim.api.nvim_create_autocmd({ 'BufEnter', 'CursorHold', 'InsertLeave' }, {
+        --         buffer = buffer,
+        --         callback = vim.lsp.codelens.refresh,
+        --       })
+        --     end)
+        --   end
+        -- end
+        --
+        -- if type(opts.diagnostics.virtual_text) == 'table' and opts.diagnostics.virtual_text.prefix == 'icons' then
+        --   opts.diagnostics.virtual_text.prefix = vim.fn.has 'nvim-0.10.0' == 0 and '●'
+        --     or function(diagnostic)
+        --       local icons = LazyVim.config.icons.diagnostics
+        --       for d, icon in pairs(icons) do
+        --         if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+        --           return icon
+        --         end
+        --       end
+        --     end
+        -- end
       end,
     },
 
@@ -909,6 +1064,7 @@ else
         end,
         formatters_by_ft = {
           lua = { 'stylua' },
+          sql = { 'sqlfluff' },
           -- Conform can also run multiple formatters sequentially
           -- python = { "isort", "black" },
           --
@@ -955,12 +1111,12 @@ else
             -- `friendly-snippets` contains a variety of premade snippets.
             --    See the README about individual language/framework/plugin snippets:
             --    https://github.com/rafamadriz/friendly-snippets
-            -- {
-            --   'rafamadriz/friendly-snippets',
-            --   config = function()
-            --     require('luasnip.loaders.from_vscode').lazy_load()
-            --   end,
-            -- },
+            {
+              'rafamadriz/friendly-snippets',
+              config = function()
+                require('luasnip.loaders.from_vscode').lazy_load()
+              end,
+            },
           },
         },
         'saadparwaiz1/cmp_luasnip',
@@ -972,13 +1128,17 @@ else
         'hrsh7th/cmp-path',
         'hrsh7th/cmp-cmdline',
         'hrsh7th/cmp-buffer',
+        'onsails/lspkind.nvim',
+        'roobert/tailwindcss-colorizer-cmp.nvim',
         -- 'hrsh7th/cmp-nvim-lua',
       },
       config = function()
         -- See `:help cmp`
         local cmp = require 'cmp'
         local luasnip = require 'luasnip'
-        luasnip.config.setup {}
+        local lspkind = require 'lspkind'
+        local tailwindcss_colorizer_cmp = require 'tailwindcss-colorizer-cmp'
+        -- luasnip.config.setup {}
         cmp.setup.cmdline('/', {
           completion = { completeopt = 'menu,menuone,noselect,noinsert' },
           mapping = cmp.mapping.preset.cmdline(),
@@ -1004,28 +1164,45 @@ else
           },
           window = {
             completion = {
-              border = 'none',                                                                            -- single|rounded|none
+              border = 'rounded', -- single|rounded|none
               -- custom colors
-              winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
-              side_padding = 1,                                                                           -- padding at sides
-              col_offset = -1,                                                                            -- move floating box left or right
+              winhighlight = 'Normal:Normal,FloatBorder:BorderBG,CursorLine:CursorLine,Search:Search', -- BorderBG|FloatBorder
+              side_padding = 1, -- padding at sides
+              col_offset = -1, -- move floating box left or right
             },
             documentation = {
-              border = 'none',                                                                            -- single|rounded|none
+              border = 'rounded', -- single|rounded|none
               -- custom colors
-              winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLineBG,Search:None', -- BorderBG|FloatBorder
+              winhighlight = 'Normal:Normal,FloatBorder:BorderBG,CursorLine:CursorLine,Search:Search', -- BorderBG|FloatBorder
             },
           },
           formatting = {
             fields = { 'kind', 'abbr', 'menu' },
             expandable_indicator = true,
-            format = function(_, item)
-              local icons = defaults.icons.kinds
-              item.menu = item.kind
-              if icons[item.kind] then
-                item.kind = icons[item.kind] .. ' '
-              end
-              return item
+            format = function(entry, item)
+              -- vscode like icons for cmp autocompletion
+              local fmt = lspkind.cmp_format {
+                -- with_text = false, -- hide kind beside the icon
+                mode = 'symbol_text',
+                maxwidth = 50,
+                ellipsis_char = '...',
+                before = tailwindcss_colorizer_cmp.formatter, -- prepend tailwindcss-colorizer
+              }(entry, item)
+
+              -- customize lspkind format
+              local strings = vim.split(fmt.kind, '%s', { trimempty = true })
+
+              -- strings[1] -> default icon
+              -- strings[2] -> kind
+
+              -- set different icon styles
+              fmt.kind = ' ' .. (strings[1] or '') -- just use the default icon
+
+              -- append customized kind text
+              fmt.kind = fmt.kind .. ' ' -- just an extra space at the end
+              fmt.menu = strings[2] ~= nil and ('  ' .. (strings[2] or '')) or ''
+
+              return fmt
             end,
           },
           -- experimental = {
@@ -1090,26 +1267,26 @@ else
       end,
     },
 
-    { -- You can easily change to a different colorscheme.
-      -- Change the name of the colorscheme plugin below, and then
-      -- change the command in the config to whatever the name of that colorscheme is
-      --
-      -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-      'sainnhe/gruvbox-material',
-      lazy = false,    -- make sure we load this during startup if it is your main colorscheme
-      priority = 1000, -- make sure to load this before all the other start plugins
-      init = function()
-        -- Load the colorscheme here.
-        -- Like many other themes, this one has different styles, and you could load
-        -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-        vim.cmd.colorscheme 'gruvbox-material'
-        -- You can configure highlights by doing something like
-        vim.cmd.hi 'Comment gui=none'
-        vim.cmd.hi 'CursorLineNr guifg=#e78a4e ctermfg=green'
-        local hi_groups = require 'custom.highlights.gruvbox-material'
-        hi_groups()
-      end,
-    },
+    -- { -- You can easily change to a different colorscheme.
+    --   -- Change the name of the colorscheme plugin below, and then
+    --   -- change the command in the config to whatever the name of that colorscheme is
+    --   --
+    --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
+    --   'sainnhe/gruvbox-material',
+    --   lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    --   priority = 1000, -- make sure to load this before all the other start plugins
+    --   init = function()
+    --     -- Load the colorscheme here.
+    --     -- Like many other themes, this one has different styles, and you could load
+    --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+    --     vim.cmd.colorscheme 'gruvbox-material'
+    --     -- You can configure highlights by doing something like
+    --     -- vim.cmd.hi 'Comment gui=none'
+    --     vim.cmd.hi 'CursorLineNr guifg=#e78a4e ctermfg=green'
+    --     -- local hi_groups = require 'custom.highlights.gruvbox-material'
+    --     -- hi_groups()
+    --   end,
+    -- },
 
     -- Highlight todo, notes, etc in comments
     { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },

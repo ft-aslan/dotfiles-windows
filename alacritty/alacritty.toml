@@ -1,5 +1,4 @@
 import = ["./themes/gruvbox_material_hard_dark.toml"]
-#working_directory = "%userprofile%"
 [window]
 padding = { x = 2, y = 0 }
 [font]
@@ -7,7 +6,7 @@ normal = { family = 'JetBrainsMono Nerd Font', style = "Regular" }
 size = 12
 offset = { x = 0, y = 1 }
 [shell]
-program = 'ubuntu'
+program = 'powershell'
 [colors]
 cursor = { text = "#ffffff", cursor = "#f14c4c" }
 # key_bindings:

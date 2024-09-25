@@ -69,7 +69,7 @@ return {
   },
   config = function()
     -- setup dap config by VsCode launch.json file
-    -- require('dap.ext.vscode').load_launchjs()
+    require('dap.ext.vscode').load_launchjs()
     local dap = require 'dap'
     local dapui = require 'dapui'
 
@@ -93,6 +93,7 @@ return {
 
     -- Basic debugging keymaps, feel free to change to your liking!
     vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
+    vim.keymap.set('n', '<S-F5>', dap.terminate, { desc = 'Debug: Terminate' })
     vim.keymap.set('n', '<F11>', dap.step_into, { desc = 'Debug: Step Into' })
     vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Debug: Step Over' })
     vim.keymap.set('n', '<S-F11>', dap.step_out, { desc = 'Debug: Step Out' })
@@ -131,44 +132,48 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     -- Install golang specific config
-    -- require('dap-go').setup()
-
-    dap.adapters.delve = {
-      type = 'server',
-      port = '${port}',
-      executable = {
-        command = 'dlv',
-        args = { 'dap', '-l', '127.0.0.1:${port}' },
-      },
-      options = {
-        detached = false,
+    require('dap-go').setup {
+      dalve = {
+        detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    -- dap.adapters.delve = {
+    --   type = 'server',
+    --   port = '${port}',
+    --   executable = {
+    --     command = 'dlv',
+    --     args = { 'dap', '-l', '127.0.0.1:${port}' },
+    --   },
+    --   options = {
+    --     detached = false,
+    --   },
+    -- }
 
     -- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
-    dap.configurations.go = {
-      {
-        type = 'delve',
-        name = 'Debug',
-        request = 'launch',
-        program = '${file}',
-      },
-      {
-        type = 'delve',
-        name = 'Debug test', -- configuration for debugging test files
-        request = 'launch',
-        mode = 'test',
-        program = '${file}',
-      },
-      -- works with go.mod packages and sub packages
-      {
-        type = 'delve',
-        name = 'Debug test (go.mod)',
-        request = 'launch',
-        mode = 'test',
-        program = './${relativeFileDirname}',
-      },
-    }
+    -- dap.configurations.go = {
+    --   {
+    --     type = 'delve',
+    --     name = 'Debug',
+    --     request = 'launch',
+    --     program = '${file}',
+    --   },
+    --   {
+    --     type = 'delve',
+    --     name = 'Debug test', -- configuration for debugging test files
+    --     request = 'launch',
+    --     mode = 'test',
+    --     program = '${file}',
+    --   },
+    --   -- works with go.mod packages and sub packages
+    --   {
+    --     type = 'delve',
+    --     name = 'Debug test (go.mod)',
+    --     request = 'launch',
+    --     mode = 'test',
+    --     program = './${relativeFileDirname}',
+    --   },
+    -- }
     --icons
     for name, sign in pairs(require('custom.public').icons.dap) do
       sign = type(sign) == 'table' and sign or { sign }
