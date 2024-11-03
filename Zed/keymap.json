@@ -1,0 +1,82 @@
+// Zed keymap
+
+//
+
+// For information on binding keys, see the Zed
+
+// documentation: https://zed.dev/docs/key-bindings
+
+//
+
+// To see the default key bindings run `zed: open default keymap`
+
+// from the command palette.
+
+[
+  {
+    "context": "vim_mode == insert",
+    "bindings": {
+      "j k": "vim::NormalBefore", // In insert mode, make jk escape to normal mode.
+      "j j": "vim::NormalBefore" // In insert mode, make jj escape to normal mode.
+    }
+  },
+  {
+    "context": "VimControl && (vim_mode == normal || vim_mode == visual) && !menu",
+    "bindings": {
+      "shift-l": ["workspace::SendKeystrokes", "$"],
+      "shift-h": ["workspace::SendKeystrokes", "^"],
+      "ctrl-shift-u": "vim::ScrollUp",
+      "ctrl-shift-d": "vim::ScrollDown",
+      "ctrl-u": ["workspace::SendKeystrokes", "ctrl-shift-u z z"],
+      "ctrl-d": ["workspace::SendKeystrokes", "ctrl-shift-d z z"],
+      "ctrl-h": ["workspace::ActivatePaneInDirection", "Left"],
+      "ctrl-l": ["workspace::ActivatePaneInDirection", "Right"],
+      "ctrl-k": ["workspace::ActivatePaneInDirection", "Up"],
+      "ctrl-j": ["workspace::ActivatePaneInDirection", "Down"],
+      "ctrl-shift-space": "editor::ShowInlineCompletion" // zed specific
+    }
+  },
+  {
+    // "context": "Editor && (vim_mode == normal || vim_mode == visual) && !VimWaiting && !menu",
+    "context": "Editor && vim_mode == normal && (vim_operator == none || vim_operator == n) && !VimWaiting",
+    "bindings": {
+      "space e": "pane::RevealInProjectPanel",
+      "space shift-e": "workspace::ToggleLeftDock",
+      "space space": "file_finder::Toggle",
+      "[ b": "pane::ActivatePrevItem",
+      "] b": "pane::ActivateNextItem",
+      "space s s": "outline::Toggle",
+      "space s shift-s": "project_symbols::Toggle",
+      // "space s d": ""
+      "space s shift-d": "diagnostics::Deploy",
+      "space s k": "vim::OpenDefaultKeymap",
+      "space s r": "search::ToggleReplace",
+      "space s g": "pane::DeploySearch",
+      "space c a": "editor::ToggleCodeActions",
+      "space c r": "editor::Rename",
+      "space b o": "pane::CloseInactiveItems",
+      "space b d": "pane::CloseActiveItem",
+      "space f p": "projects::OpenRecent",
+      "ctrl-a": "editor::SelectAll" // vim default: increment
+    }
+  },
+  {
+    "context": "Terminal || Editor",
+    "bindings": {
+      "ctrl-shift-t": "workspace::NewTerminal",
+      "ctrl-t": "workspace::ToggleBottomDock",
+      "ctrl-x": "pane::CloseActiveItem" // vim default: decrement
+    }
+  },
+  {
+    "context": "vim_mode == visual",
+    "bindings": {
+      "shift-s": [
+        "vim::PushOperator",
+        {
+          "AddSurrounds": {}
+        }
+      ]
+    }
+  }
+]
