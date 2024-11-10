@@ -21,6 +21,12 @@
     }
   },
   {
+    "context": "VimControl && vim_mode == normal && !menu",
+    "bindings": {
+      // "g s": "goto"
+    }
+  },
+  {
     "context": "VimControl && (vim_mode == normal || vim_mode == visual) && !menu",
     "bindings": {
       "shift-l": ["workspace::SendKeystrokes", "$"],
@@ -77,6 +83,31 @@
           "AddSurrounds": {}
         }
       ]
+    }
+  },
+  {
+    // neo-tree.nvim compatibility
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      ":": "command_palette::Toggle",
+      "a": "project_panel::NewFile",
+      "/": "project_panel::NewSearchInDirectory",
+      "A": "project_panel::NewDirectory",
+      "y": "project_panel::Copy",
+      "x": "project_panel::Cut",
+      "p": "project_panel::Paste",
+      "enter": "project_panel::OpenPermanent",
+      "escape": "project_panel::ToggleFocus",
+      "h": "project_panel::CollapseSelectedEntry",
+      "j": "menu::SelectNext",
+      "k": "menu::SelectPrev",
+      "l": "project_panel::ExpandSelectedEntry",
+      "ctrl-l": "project_panel::ToggleFocus",
+      "d": "project_panel::Trash",
+      "r": "project_panel::Rename",
+      "e": "project_panel::RevealInFileManager",
+      "shift-g": "menu::SelectLast",
+      "g g": "menu::SelectFirst"
     }
   }
 ]

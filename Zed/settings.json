@@ -29,6 +29,7 @@
       "enabled": false
     }
   },
+  // "auto_signature_help": true,
   // "inlay_hints": {
   //   "enabled": true
   // },
